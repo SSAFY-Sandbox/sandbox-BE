@@ -1,4 +1,4 @@
-package com.ssafy.side.common.config.jwt;
+package com.ssafy.side.common.Filter;
 
 import static com.ssafy.side.common.exception.ErrorMessage.ERR_ACCESS_TOKEN_EXPIRED;
 import static com.ssafy.side.common.exception.ErrorMessage.ERR_NO_COOKIE;
@@ -6,7 +6,10 @@ import static com.ssafy.side.common.exception.ErrorMessage.ERR_NO_REFRESH_TOKEN_
 import static com.ssafy.side.common.exception.ErrorMessage.ERR_REFRESH_TOKEN_EXPIRED;
 import static com.ssafy.side.common.exception.ErrorMessage.ERR_UNAUTORIZED;
 
-import com.ssafy.side.common.exception.ErrorMessage;
+import com.ssafy.side.common.config.jwt.JwtAuthenticationEntryPoint;
+import com.ssafy.side.common.config.jwt.JwtExceptionType;
+import com.ssafy.side.common.config.jwt.JwtTokenProvider;
+import com.ssafy.side.common.config.jwt.UserAuthentication;
 import com.ssafy.side.common.exception.UnAuthorizedException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

@@ -76,11 +76,11 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(
                 Arrays.asList(
                         "http://localhost:5173",
-                        "https://ssafysandbox.vercel.app"
+                        "https://ssafysandbox.vercel.app/"
                 ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"));
         configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(false);
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

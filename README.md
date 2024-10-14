@@ -2,7 +2,7 @@
 - SSAFY Sandbox는 SSAFY 12기 서울 15반에서 백엔드 개발자를 희망하는 친구들이 협업 경험을 보다 쉽게, 그리고 효과적으로 쌓을 수 있도록 하기 위해 시작되었습니다.
 - 저희 BE팀은 FE팀이 배포 하기 전, 테스트를 위한 서버를 구축하고 있습니다.
 
-  <br>
+<br>
 
 ## 💻 Team-SandBox Server Developers
 
@@ -10,6 +10,8 @@
 | :---------:|:----------:| :---------:|:----------:|
 | ![image](https://github.com/user-attachments/assets/465a43f1-de91-43e4-b531-ef7462700bdd) | ![image](https://github.com/user-attachments/assets/3bd85917-32e8-4e89-99f7-8b05d724fd90) | ![image](https://github.com/user-attachments/assets/4aeea6f1-eeb3-4492-abf8-b5e5ad7891ee) |![image](https://github.com/user-attachments/assets/7e15b7a2-6516-48f8-8c7a-84e1fe1a9dcc) |
 | [wimmings](https://github.com/wimmings) | [king0104](https://github.com/king0104) | [im2sh](https://github.com/im2sh) | [yeseul106](https://github.com/yeseul106) |
+
+<br>
 
 ## 🙋🏻‍♀️ 역할 분담
 
@@ -24,6 +26,7 @@
 | 이메일 인증 |  | 미정 |
 | 이미지 업로드 |  | 미정 |
 | pagenation 구현 |  | 미정 |
+
 <br>
 
 ## 📂 Project Foldering

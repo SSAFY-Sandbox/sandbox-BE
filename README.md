@@ -8,7 +8,7 @@
 
 | 🐹 오수영 | 🐯 윤수빈 | 🐻 이석환 | 🐰 조예슬 |
 | :---------:|:----------:| :---------:|:----------:|
-| ![image](https://github.com/user-attachments/assets/465a43f1-de91-43e4-b531-ef7462700bdd) | ![image](https://github.com/user-attachments/assets/3bd85917-32e8-4e89-99f7-8b05d724fd90) | ![image](https://github.com/user-attachments/assets/4aeea6f1-eeb3-4492-abf8-b5e5ad7891ee) |![image](https://github.com/user-attachments/assets/7e15b7a2-6516-48f8-8c7a-84e1fe1a9dcc) |
+| ![image](https://github.com/user-attachments/assets/465a43f1-de91-43e4-b531-ef7462700bdd) | ![image](https://github.com/user-attachments/assets/3bd85917-32e8-4e89-99f7-8b05d724fd90) | ![857973AB-4D75-42D2-A2CA-AB679F5F092A](https://github.com/user-attachments/assets/dc6772fb-dc8d-4395-bc3e-ba9e2396a6bb) | ![image](https://github.com/user-attachments/assets/7e15b7a2-6516-48f8-8c7a-84e1fe1a9dcc) |
 | [wimmings](https://github.com/wimmings) | [king0104](https://github.com/king0104) | [im2sh](https://github.com/im2sh) | [yeseul106](https://github.com/yeseul106) |
 
 <br>

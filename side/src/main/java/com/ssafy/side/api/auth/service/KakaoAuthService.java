@@ -18,8 +18,10 @@ public class KakaoAuthService {
     @Value(value="${kakao.clientId}")
     private String clientId;
 
+    @Value(value = "${kakao.redirect-uri}")
+    private String redirectUri;
+
     private static final String GRANT_TYPE = "authorization_code";
-    private static final String REDIRECT_URI = "http://localhost:5173/oauth/redirect";
 
     private final KakaoAuthApiClient kakaoAuthApiClient;
     private final KakaoApiClient kakaoApiClient;
@@ -28,7 +30,7 @@ public class KakaoAuthService {
         KakaoTokenResponse tokenResponse = kakaoAuthApiClient.getOAuth2Token(
                 GRANT_TYPE,
                 clientId,
-                REDIRECT_URI,
+                redirectUri,
                 socialLoginRequestDto.code()
         );
         KakaoAccessTokenInfo tokenInfo = kakaoApiClient.getAccessTokenInfo("Bearer " + tokenResponse.getAccessToken());

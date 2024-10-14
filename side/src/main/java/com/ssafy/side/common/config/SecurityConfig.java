@@ -1,7 +1,7 @@
 package com.ssafy.side.common.config;
 
 import com.ssafy.side.common.config.jwt.JwtAuthenticationEntryPoint;
-import com.ssafy.side.common.config.jwt.JwtAuthenticationFilter;
+import com.ssafy.side.common.Filter.JwtAuthenticationFilter;
 import com.ssafy.side.common.config.jwt.JwtTokenProvider;
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -41,7 +41,8 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/auth/**",
-            "/actuator/**"
+            "/actuator/**",
+            "/health"
     };
 
     @Bean
@@ -49,8 +50,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .sessionManagement(
-                        (sessionManagement) -> sessionManagement.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS))
+                        sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(Stream
@@ -63,12 +63,10 @@ public class SecurityConfig {
                                         .toArray(AntPathRequestMatcher[]::new)).permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(this.jwtTokenProvider,
-                                this.jwtAuthenticationEntryPoint),
+                        new JwtAuthenticationFilter(this.jwtTokenProvider, this.jwtAuthenticationEntryPoint),
                         UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(this.jwtAuthenticationEntryPoint))
-                .requiresChannel(channel -> channel.anyRequest().requiresSecure());
+                        .authenticationEntryPoint(this.jwtAuthenticationEntryPoint));
         return http.build();
     }
 
@@ -78,7 +76,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(
                 Arrays.asList(
                         "http://localhost:5173",
-                        "https://ssafytodo.vercel.app"
+                        "https://ssafysandbox.vercel.app"
                 ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"));
         configuration.addAllowedHeader("*");

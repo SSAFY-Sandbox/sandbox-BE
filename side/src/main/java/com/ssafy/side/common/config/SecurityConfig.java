@@ -67,7 +67,8 @@ public class SecurityConfig {
                                 this.jwtAuthenticationEntryPoint),
                         UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(this.jwtAuthenticationEntryPoint));
+                        .authenticationEntryPoint(this.jwtAuthenticationEntryPoint))
+                .requiresChannel(channel -> channel.anyRequest().requiresSecure());
         return http.build();
     }
 

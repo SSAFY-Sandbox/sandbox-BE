@@ -11,6 +11,9 @@ import com.ssafy.side.api.member.domain.Member;
 import com.ssafy.side.api.member.domain.MemberRepository;
 import com.ssafy.side.common.config.jwt.JwtTokenProvider;
 import com.ssafy.side.common.exception.BadRequestException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,6 +61,22 @@ public class AuthServiceImplWithKakao implements AuthService {
 
         } catch (IllegalArgumentException ex) {
             throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void logout(String refreshToken, HttpServletRequest request, HttpServletResponse response) {
+        Member member = memberRepository.findByRefreshTokenOrThrow(refreshToken);
+        member.updateRefreshToken(null);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setMaxAge(0);
+                cookie.setValue(null);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+            }
         }
     }
 }

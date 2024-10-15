@@ -7,6 +7,7 @@ import com.ssafy.side.api.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,15 @@ public class AuthController {
     public ResponseEntity<LoginAccessTokenDto> reissueToken(HttpServletRequest request) {
         String accessToken = (String) request.getAttribute("newAccessToken");
         return ResponseEntity.status(HttpStatus.CREATED).body(new LoginAccessTokenDto(accessToken));
+    }
+
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(description = "로그아웃 API 입니다.")
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = (String) request.getAttribute("refreshToken");
+        authService.logout(refreshToken, request, response);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

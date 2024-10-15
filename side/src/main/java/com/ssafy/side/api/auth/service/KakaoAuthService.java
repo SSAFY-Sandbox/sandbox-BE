@@ -18,7 +18,7 @@ public class KakaoAuthService {
     @Value(value="${kakao.clientId}")
     private String clientId;
 
-    @Value(value = "${kakao.redirect-uri-dev}")
+    @Value(value = "${kakao.redirect-uri}")
     private String redirectUri;
 
     private static final String GRANT_TYPE = "authorization_code";

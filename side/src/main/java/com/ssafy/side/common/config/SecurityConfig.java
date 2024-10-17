@@ -76,7 +76,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(
                 Arrays.asList(
                         "http://localhost:5173",
-                        "https://ssafysandbox.vercel.app/"
+                        "https://ssafysandbox.vercel.app",
+                        "https://sandbox-lake-two.vercel.app"
                 ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"));
         configuration.addAllowedHeader("*");

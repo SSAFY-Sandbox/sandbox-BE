@@ -219,7 +219,7 @@ com
 ### 🔹Branch Convention
 
 - [develop] : 최종 배포
-- [feature] : 기능 추가
+- [feat] : 기능 추가
 - [fix] : 에러 수정, 버그 수정
 - [docs] : README, 문서
 - [refactor] : 코드 리펙토링 (기능 변경 없이 코드만 수정할 때)
@@ -228,7 +228,7 @@ com
 
 ### 브랜치 명 예시
 
-`ex) feature/#{이슈번호}`
+`ex) feat/#{이슈번호}`
 
 <br>
 

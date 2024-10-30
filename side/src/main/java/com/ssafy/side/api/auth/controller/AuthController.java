@@ -47,7 +47,7 @@ public class AuthController implements AuthApi {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
-                .body(new LoginAccessTokenDto(responseDto.accessToken(), Optional.empty()));
+                .body(new LoginAccessTokenDto(responseDto.accessToken(), null));
     }
 
     @GetMapping({"/reissue", "/cookie/reissue"})
@@ -55,7 +55,7 @@ public class AuthController implements AuthApi {
     public ResponseEntity<LoginAccessTokenDto> reissueTokenWithCookie(HttpServletRequest request) {
         String accessToken = (String) request.getAttribute("newAccessToken");
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new LoginAccessTokenDto(accessToken , Optional.empty()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new LoginAccessTokenDto(accessToken , null));
     }
 
     /**
@@ -76,7 +76,7 @@ public class AuthController implements AuthApi {
     public ResponseEntity<LoginAccessTokenDto> reissueTokenWithHeader(HttpServletRequest request) {
         String accessToken = (String) request.getAttribute("newAccessToken");
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new LoginAccessTokenDto(accessToken , Optional.empty()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new LoginAccessTokenDto(accessToken , null));
     }
 
     /**

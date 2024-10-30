@@ -100,7 +100,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }
-        validateRefreshToken(refreshToken);
         request.setAttribute("refreshToken", refreshToken);
     }
 

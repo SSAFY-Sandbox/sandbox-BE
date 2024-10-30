@@ -8,6 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 public interface AuthService {
 
     SocialLoginResponseDto socialLogin(SocialLoginRequestDto requestDto);
-    void logout(String refreshToken, HttpServletRequest request, HttpServletResponse response);
+    void logout(String refreshToken);
 
 }

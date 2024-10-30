@@ -36,7 +36,7 @@ public class JwtTokenProvider {
   private Long refreshTokenExpireLength;
 
   private static final String AUTHORIZATION_HEADER = "Authorization";
-  private static final String REFRESH_AUTHORIZATION_HEADER = "refreshToken";
+  private static final String REFRESH_AUTHORIZATION_HEADER = "X-Refresh";
 
   public String generateAccessToken(Long memberId) {
     Date now = new Date();
@@ -71,7 +71,13 @@ public class JwtTokenProvider {
             .getBody();
   }
 
-  public String resolveToken(HttpServletRequest request) {
+  public String resolveRefreshToken(HttpServletRequest request) {
+
+    String header = request.getHeader(REFRESH_AUTHORIZATION_HEADER);
+    return header;
+  }
+
+  public String resolveAccessToken(HttpServletRequest request) {
 
     String header = request.getHeader(AUTHORIZATION_HEADER);
 

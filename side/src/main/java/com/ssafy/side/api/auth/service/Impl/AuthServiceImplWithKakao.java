@@ -66,17 +66,9 @@ public class AuthServiceImplWithKakao implements AuthService {
 
     @Override
     @Transactional
-    public void logout(String refreshToken, HttpServletRequest request, HttpServletResponse response) {
+    public void logout(String refreshToken) {
         Member member = memberRepository.findByRefreshTokenOrThrow(refreshToken);
         member.updateRefreshToken(null);
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                cookie.setMaxAge(0);
-                cookie.setValue(null);
-                cookie.setPath("/");
-                response.addCookie(cookie);
-            }
-        }
     }
+
 }

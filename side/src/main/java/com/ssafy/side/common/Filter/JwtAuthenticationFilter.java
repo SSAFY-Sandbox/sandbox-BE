@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -29,18 +30,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    private static final String ISSUE_TOKEN_API_URL = "/auth/reissue";
-    private static final String LOGOUT_API_URL = "/auth/logout";
+    private static final Set<String> ISSUE_TOKEN_API_URL_SET = Set.of(
+            "/oauth/reissue",
+            "/oauth/cookie/reissue",
+            "/oauth/authorization/reissue"
+    );
+    private static final Set<String> LOGOUT_API_URL_SET = Set.of(
+            "/oauth/logout",
+            "/oauth/cookie/logout",
+            "/oauth/authorization/logout"
+    );
+    private static final String LOGOUT_WITH_HEADER_API_URL = "/oauth/logout/authorization";
+    private static final String REISSUE_WITH_HEADER_API_URL = "/oauth/reissue/authorization";
+    private static final String ACCESS_TOKEN_IN_COOKIE_URL = "/oauth/cookie/member";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         try {
-            String accessToken = jwtTokenProvider.resolveToken(request);
-
-            if (ISSUE_TOKEN_API_URL.equals(request.getRequestURI())) {
+            String accessToken;
+            if (ACCESS_TOKEN_IN_COOKIE_URL.equals(request.getRequestURI())) {
+                accessToken = getAccessTokenFromCookies(request);
+            } else {
+                accessToken = jwtTokenProvider.resolveAccessToken(request);
+            }
+            if (ISSUE_TOKEN_API_URL_SET.contains(request.getRequestURI())) {
                 handleTokenReissue(request);
-            } else if (LOGOUT_API_URL.equals(request.getRequestURI())) {
+            } else if (LOGOUT_API_URL_SET.contains(request.getRequestURI())) {
                 handleLogout(request, response);
             } else {
                 validateAccessToken(accessToken);
@@ -54,9 +70,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void handleTokenReissue(HttpServletRequest request) {
-        String refreshToken = getRefreshTokenFromCookies(request);
+        String refreshToken;
+        if (REISSUE_WITH_HEADER_API_URL.equals(request.getRequestURI())) {
+            refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+        } else {
+            refreshToken = getRefreshTokenFromCookies(request);
+        }
         validateRefreshToken(refreshToken);
-
         Long memberId = jwtTokenProvider.validateMemberRefreshToken(refreshToken);
         String newAccessToken = jwtTokenProvider.generateAccessToken(memberId);
 
@@ -65,9 +85,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void handleLogout(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = getRefreshTokenFromCookies(request);
+        String refreshToken;
+        if (LOGOUT_WITH_HEADER_API_URL.equals(request.getRequestURI())) {
+            refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+        } else {
+            refreshToken = getRefreshTokenFromCookies(request);
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    cookie.setMaxAge(0);
+                    cookie.setValue(null);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                }
+            }
+        }
         validateRefreshToken(refreshToken);
-
         request.setAttribute("refreshToken", refreshToken);
     }
 
@@ -80,7 +113,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .filter(cookie -> "refreshToken".equals(cookie.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
-                .orElseThrow(() -> new UnAuthorizedException(ERR_NO_REFRESH_TOKEN_IN_COOKIE));
+                .orElseThrow(() -> new UnAuthorizedException(ERR_REFRESH_TOKEN_EXPIRED));
+    }
+
+    private String getAccessTokenFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            throw new UnAuthorizedException(ERR_NO_COOKIE);
+        }
+        return Arrays.stream(cookies)
+                .filter(cookie -> "accessToken".equals(cookie.getName()))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElseThrow(() -> new UnAuthorizedException(ERR_ACCESS_TOKEN_EXPIRED));
     }
 
     private void validateRefreshToken(String refreshToken) {

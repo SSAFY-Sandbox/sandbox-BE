@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -108,8 +110,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (cookies == null) {
             throw new UnAuthorizedException(ERR_NO_COOKIE);
         }
+
+        // 쿠키의 key와 value를 로그로 출력
+        Arrays.stream(cookies).forEach(cookie ->
+                log.info("Cookie key: {}, value: {}", cookie.getName(), cookie.getValue())
+        );
+
         return Arrays.stream(cookies)
-                .filter(cookie -> "refreshToken".equals(cookie.getName()))
+                .filter(cookie -> "refreshToken".equals(cookie.getName()) && cookie.getValue() != null)
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElseThrow(() -> new UnAuthorizedException(ERR_REFRESH_TOKEN_EXPIRED));
@@ -121,7 +129,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new UnAuthorizedException(ERR_NO_COOKIE);
         }
         return Arrays.stream(cookies)
-                .filter(cookie -> "accessToken".equals(cookie.getName()))
+                .filter(cookie -> "accessToken".equals(cookie.getName()) && cookie.getValue() != null)
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElseThrow(() -> new UnAuthorizedException(ERR_ACCESS_TOKEN_EXPIRED));

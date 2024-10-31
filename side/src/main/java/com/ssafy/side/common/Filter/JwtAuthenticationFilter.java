@@ -48,9 +48,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String REISSUE_WITH_HEADER_API_URL = "/oauth/authorization/reissue";
     private static final String ACCESS_TOKEN_IN_COOKIE_URL = "/oauth/cookie/member";
 
-    @Value(value = "${client.domain}")
-    private String clientDomain;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {

@@ -22,8 +22,8 @@ public interface AuthApi {
     @Operation(summary = "[AT - Header, RT - Cookie] / [AT - Cookie, RT - Cookie] 토큰 재발급", description = "토큰을 재발급 하는 API 입니다.")
     ResponseEntity<LoginAccessTokenDto> reissueTokenWithCookie(HttpServletRequest request);
 
-    @Operation(summary = "[AT - Header, RT - Cookie] / [AT - Header, RT - Header] / [AT - Cookie, RT - Cookie] 로그아웃", description = "로그아웃 API 입니다.")
-    ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response);
+    @Operation(summary = "[AT - Header, RT - Cookie] 로그아웃", description = "로그아웃 API 입니다.")
+    ResponseEntity<Void> logoutWithHeaderAndCookie(HttpServletRequest request, HttpServletResponse response);
 
     /**
      * [AT - Header, RT - Header] 방식
@@ -34,11 +34,17 @@ public interface AuthApi {
     @Operation(summary = "[AT - Header, RT - Header] 토큰 재발급", description = "토큰을 재발급 하는 API 입니다.")
     ResponseEntity<LoginAccessTokenDto> reissueTokenWithHeader(HttpServletRequest request);
 
+    @Operation(summary = "[AT - Header, RT - Header] 로그아웃", description = "로그아웃 API 입니다.")
+    ResponseEntity<Void> logoutWithHeaderAndHeader(HttpServletRequest request);
+
     /**
      * [AT - Cookie, RT - Cookie] 방식
      */
     @Operation(summary = "[AT - Cookie, RT - Cookie] 로그인", description = "카카오 소셜 로그인 API 입니다.")
     ResponseEntity<LoginAccessTokenDto> socialLoginWithCookieAndCookie(@RequestBody SocialLoginRequestDto requestDto);
+
+    @Operation(summary = "[AT - Cookie, RT - Cookie] 로그아웃", description = "로그아웃 API 입니다.")
+    ResponseEntity<Void> logoutWithCookieAndCookie(HttpServletRequest request, HttpServletResponse response);
 
     @Operation(description = "유저 닉네임을 조회하는 API 입니다.")
     ResponseEntity<GetMemberInfoResponseDto> getMemberInfo(Principal principal);

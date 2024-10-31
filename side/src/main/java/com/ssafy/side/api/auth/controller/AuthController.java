@@ -59,6 +59,26 @@ public class AuthController implements AuthApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(new LoginAccessTokenDto(accessToken , null));
     }
 
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> logoutWithHeaderAndCookie(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = (String) request.getAttribute("refreshToken");
+        authService.logout(refreshToken);
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) { // refreshToken 쿠키만 삭제
+                    cookie.setMaxAge(0);
+                    cookie.setValue(null);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     /**
      * [AT - Header, RT - Header] 방식
      */
@@ -80,6 +100,14 @@ public class AuthController implements AuthApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(new LoginAccessTokenDto(accessToken , null));
     }
 
+    @PostMapping( "/authorization/logout")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> logoutWithHeaderAndHeader(HttpServletRequest request) {
+        String refreshToken = (String) request.getAttribute("refreshToken");
+        authService.logout(refreshToken);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     /**
      * [AT - Cookie, RT - Cookie] 방식
      */
@@ -98,16 +126,16 @@ public class AuthController implements AuthApi {
                 .build();
     }
 
-    @PostMapping({"/logout", "/authorization/logout", "/cookie/logout"})
+    @PostMapping({ "/cookie/logout"})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Void> logoutWithCookieAndCookie(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = (String) request.getAttribute("refreshToken");
         authService.logout(refreshToken);
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("refreshToken".equals(cookie.getName())) { // refreshToken 쿠키만 삭제
+                if ("refreshToken".equals(cookie.getName()) || "accessToken".equals(cookie.getName())) {
                     cookie.setMaxAge(0);
                     cookie.setValue(null);
                     cookie.setPath("/");

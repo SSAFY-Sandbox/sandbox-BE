@@ -111,17 +111,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new UnAuthorizedException(ERR_NO_COOKIE);
         }
 
-        // 쿠키의 key와 value를 로그로 출력
+        // 쿠키의 key와 value, path를 로그로 출력하여 경로 확인
         Arrays.stream(cookies).forEach(cookie ->
-                log.info("Cookie key: {}, value: {}", cookie.getName(), cookie.getValue())
+                log.info("Cookie key: {}, value: {}, path: {}", cookie.getName(), cookie.getValue(), cookie.getPath())
         );
 
         return Arrays.stream(cookies)
                 .filter(cookie -> "refreshToken".equals(cookie.getName()) && cookie.getValue() != null)
+                .filter(cookie -> "/".equals(cookie.getPath())) // path가 "/" 인 경우만 필터링
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElseThrow(() -> new UnAuthorizedException(ERR_REFRESH_TOKEN_EXPIRED));
     }
+
 
     private String getAccessTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();

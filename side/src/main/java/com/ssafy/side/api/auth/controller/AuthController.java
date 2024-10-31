@@ -46,7 +46,7 @@ public class AuthController implements AuthApi {
         SocialLoginResponseDto responseDto = authService.socialLogin(requestDto);
 
         HttpHeaders headers = new HttpHeaders();
-        createCookie(response, "accessToken", responseDto.accessToken());
+        createCookie(response, "refreshToken", responseDto.accessToken());
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)

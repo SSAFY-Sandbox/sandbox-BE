@@ -118,7 +118,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         return Arrays.stream(cookies)
                 .filter(cookie -> "refreshToken".equals(cookie.getName()) && cookie.getValue() != null)
-                .filter(cookie -> "/".equals(cookie.getPath())) // path가 "/" 인 경우만 필터링
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElseThrow(() -> new UnAuthorizedException(ERR_REFRESH_TOKEN_EXPIRED));

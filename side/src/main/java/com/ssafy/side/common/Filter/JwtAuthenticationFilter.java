@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,6 +46,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String LOGOUT_WITH_HEADER_API_URL = "/oauth/logout/authorization";
     private static final String REISSUE_WITH_HEADER_API_URL = "/oauth/reissue/authorization";
     private static final String ACCESS_TOKEN_IN_COOKIE_URL = "/oauth/cookie/member";
+
+    @Value(value = "${client.domain}")
+    private String clientDomain;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -98,6 +102,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     cookie.setMaxAge(0);
                     cookie.setValue(null);
                     cookie.setPath("/");
+                    cookie.setDomain(clientDomain);
                     response.addCookie(cookie);
                 }
             }
@@ -118,6 +123,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         return Arrays.stream(cookies)
                 .filter(cookie -> "refreshToken".equals(cookie.getName()) && cookie.getValue() != null)
+                .filter(cookie -> "/".equals(cookie.getPath())) // path가 "/" 인 경우만 필터링
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElseThrow(() -> new UnAuthorizedException(ERR_REFRESH_TOKEN_EXPIRED));

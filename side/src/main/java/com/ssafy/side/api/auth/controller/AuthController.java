@@ -9,6 +9,7 @@ import com.ssafy.side.api.member.service.MemberService;
 import com.ssafy.side.common.util.MemberUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.security.Principal;
@@ -41,11 +42,11 @@ public class AuthController implements AuthApi {
 
     @PostMapping("/auth")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<LoginAccessTokenDto> socialLoginWithHeaderAndCookie(@RequestBody SocialLoginRequestDto requestDto) {
+    public ResponseEntity<LoginAccessTokenDto> socialLoginWithHeaderAndCookie(@RequestBody SocialLoginRequestDto requestDto, HttpServletResponse response) {
         SocialLoginResponseDto responseDto = authService.socialLogin(requestDto);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, createCookie("refreshToken", responseDto.refreshToken()).toString());
+        createCookie(response, "accessToken", responseDto.accessToken());
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
@@ -66,7 +67,7 @@ public class AuthController implements AuthApi {
 
     @PostMapping("/authorization/auth")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<LoginAccessTokenDto> socialLoginWithHeaderAndHeader(@RequestBody SocialLoginRequestDto requestDto) {
+    public ResponseEntity<LoginAccessTokenDto> socialLoginWithHeaderAndHeader(@RequestBody SocialLoginRequestDto requestDto, HttpServletResponse response) {
         SocialLoginResponseDto responseDto = authService.socialLogin(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -87,12 +88,12 @@ public class AuthController implements AuthApi {
 
     @PostMapping("/cookie/auth")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<LoginAccessTokenDto> socialLoginWithCookieAndCookie(@RequestBody SocialLoginRequestDto requestDto) {
+    public ResponseEntity<LoginAccessTokenDto> socialLoginWithCookieAndCookie(@RequestBody SocialLoginRequestDto requestDto, HttpServletResponse response) {
         SocialLoginResponseDto responseDto = authService.socialLogin(requestDto);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, createCookie("accessToken", responseDto.accessToken()).toString());
-        headers.add(HttpHeaders.SET_COOKIE, createCookie("refreshToken", responseDto.refreshToken()).toString());
+        createCookie(response, "accessToken", responseDto.accessToken());
+        createCookie(response, "refreshToken", responseDto.refreshToken());
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
@@ -116,13 +117,12 @@ public class AuthController implements AuthApi {
         return ResponseEntity.ok(memberService.getMemberInfo(memberId));
     }
 
-    private ResponseCookie createCookie(String name, String value) {
-        return ResponseCookie.from(name, value)
-                .maxAge(7 * 24 * 60 * 60)
-                .path("/")
-                .sameSite("None")
-                .httpOnly(true)
-                .secure(true)
-                .build();
+    private void createCookie(HttpServletResponse response, String name, String value) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        response.addCookie(cookie);
     }
 }

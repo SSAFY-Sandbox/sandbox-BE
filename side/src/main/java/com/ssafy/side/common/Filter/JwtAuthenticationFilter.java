@@ -97,15 +97,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             refreshToken = jwtTokenProvider.resolveRefreshToken(request);
         } else {
             refreshToken = getRefreshTokenFromCookies(request);
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    cookie.setMaxAge(0);
-                    cookie.setValue(null);
-                    cookie.setPath("/");
-                    response.addCookie(cookie);
-                }
-            }
         }
         request.setAttribute("refreshToken", refreshToken);
     }

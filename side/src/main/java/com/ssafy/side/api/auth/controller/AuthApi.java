@@ -6,6 +6,7 @@ import com.ssafy.side.api.member.dto.GetMemberInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public interface AuthApi {
     ResponseEntity<LoginAccessTokenDto> reissueTokenWithCookie(HttpServletRequest request);
 
     @Operation(summary = "[AT - Header, RT - Cookie] / [AT - Header, RT - Header] / [AT - Cookie, RT - Cookie] 로그아웃", description = "로그아웃 API 입니다.")
-    ResponseEntity<Void> logout(HttpServletRequest request);
+    ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response);
 
     /**
      * [AT - Header, RT - Header] 방식

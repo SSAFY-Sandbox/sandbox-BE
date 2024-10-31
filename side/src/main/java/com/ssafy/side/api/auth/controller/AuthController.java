@@ -9,6 +9,7 @@ import com.ssafy.side.api.member.service.MemberService;
 import com.ssafy.side.common.util.MemberUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.security.Principal;
@@ -99,10 +100,21 @@ public class AuthController implements AuthApi {
 
     @PostMapping({"/logout", "/authorization/logout", "/cookie/logout"})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = (String) request.getAttribute("refreshToken");
         authService.logout(refreshToken);
 
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) { // refreshToken 쿠키만 삭제
+                    cookie.setMaxAge(0);
+                    cookie.setValue(null);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                }
+            }
+        }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

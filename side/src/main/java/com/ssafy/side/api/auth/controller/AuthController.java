@@ -120,9 +120,17 @@ public class AuthController implements AuthApi {
     private void createCookie(HttpServletResponse response, String name, String value) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
-        cookie.setPath("/");
+        cookie.setPath("/"); // 명시적으로 경로 설정
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+
+        // 일반적으로 쿠키를 추가
         response.addCookie(cookie);
+
+        // SameSite=None을 포함하여 Set-Cookie 헤더를 직접 설정
+        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=None",
+                cookie.getName(), cookie.getValue(), cookie.getMaxAge(), cookie.getPath());
+
+        response.addHeader("Set-Cookie", cookieHeader);
     }
 }

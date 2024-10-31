@@ -102,7 +102,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     cookie.setMaxAge(0);
                     cookie.setValue(null);
                     cookie.setPath("/");
-                    cookie.setDomain(clientDomain);
                     response.addCookie(cookie);
                 }
             }

@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -117,15 +118,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 쿠키의 key와 value, path를 로그로 출력하여 경로 확인
         Arrays.stream(cookies).forEach(cookie ->
-                log.info("Cookie key: {}, value: {}, path: {}", cookie.getName(), cookie.getValue(), cookie.getPath())
+                log.info("Cookie key: {}, value: {}", cookie.getName(), cookie.getValue())
         );
 
-        return Arrays.stream(cookies)
-                .filter(cookie -> "refreshToken".equals(cookie.getName()) && cookie.getValue() != null)
-                .filter(cookie -> "/".equals(cookie.getPath())) // path가 "/" 인 경우만 필터링
+        Optional<String> refreshToken = Arrays.stream(cookies)
+                .filter(cookie -> "refreshToken".equals(cookie.getName()))
+                .filter(cookie -> cookie.getValue() != null)
                 .map(Cookie::getValue)
-                .findFirst()
-                .orElseThrow(() -> new UnAuthorizedException(ERR_REFRESH_TOKEN_EXPIRED));
+                .findFirst();
+
+        // refreshToken이 존재할 경우 로그로 출력
+        refreshToken.ifPresent(value -> log.info("Found refreshToken value: {}", value));
+
+        // refreshToken이 없으면 예외를 던짐
+        return refreshToken.orElseThrow(() -> new UnAuthorizedException(ERR_REFRESH_TOKEN_EXPIRED));
     }
 
 

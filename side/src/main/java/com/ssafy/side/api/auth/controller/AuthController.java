@@ -9,13 +9,11 @@ import com.ssafy.side.api.member.service.MemberService;
 import com.ssafy.side.common.util.MemberUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/oauth")
 @RequiredArgsConstructor
-@Slf4j
 public class AuthController implements AuthApi {
 
     private final AuthService authService;
@@ -42,11 +39,11 @@ public class AuthController implements AuthApi {
 
     @PostMapping("/auth")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<LoginAccessTokenDto> socialLoginWithHeaderAndCookie(@RequestBody SocialLoginRequestDto requestDto, HttpServletResponse response) {
+    public ResponseEntity<LoginAccessTokenDto> socialLoginWithHeaderAndCookie(@RequestBody SocialLoginRequestDto requestDto) {
         SocialLoginResponseDto responseDto = authService.socialLogin(requestDto);
 
         HttpHeaders headers = new HttpHeaders();
-        createCookie(response, "refreshToken", responseDto.accessToken());
+        headers.add(HttpHeaders.SET_COOKIE, createCookie("refreshToken", responseDto.refreshToken()).toString());
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
@@ -67,7 +64,7 @@ public class AuthController implements AuthApi {
 
     @PostMapping("/authorization/auth")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<LoginAccessTokenDto> socialLoginWithHeaderAndHeader(@RequestBody SocialLoginRequestDto requestDto, HttpServletResponse response) {
+    public ResponseEntity<LoginAccessTokenDto> socialLoginWithHeaderAndHeader(@RequestBody SocialLoginRequestDto requestDto) {
         SocialLoginResponseDto responseDto = authService.socialLogin(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -88,12 +85,12 @@ public class AuthController implements AuthApi {
 
     @PostMapping("/cookie/auth")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<LoginAccessTokenDto> socialLoginWithCookieAndCookie(@RequestBody SocialLoginRequestDto requestDto, HttpServletResponse response) {
+    public ResponseEntity<LoginAccessTokenDto> socialLoginWithCookieAndCookie(@RequestBody SocialLoginRequestDto requestDto) {
         SocialLoginResponseDto responseDto = authService.socialLogin(requestDto);
 
         HttpHeaders headers = new HttpHeaders();
-        createCookie(response, "accessToken", responseDto.accessToken());
-        createCookie(response, "refreshToken", responseDto.refreshToken());
+        headers.add(HttpHeaders.SET_COOKIE, createCookie("accessToken", responseDto.accessToken()).toString());
+        headers.add(HttpHeaders.SET_COOKIE, createCookie("refreshToken", responseDto.refreshToken()).toString());
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .headers(headers)
@@ -104,7 +101,6 @@ public class AuthController implements AuthApi {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         String refreshToken = (String) request.getAttribute("refreshToken");
-        log.info("Refresh token: {}", refreshToken);
         authService.logout(refreshToken);
 
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -117,20 +113,13 @@ public class AuthController implements AuthApi {
         return ResponseEntity.ok(memberService.getMemberInfo(memberId));
     }
 
-    private void createCookie(HttpServletResponse response, String name, String value) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
-        cookie.setPath("/"); // 명시적으로 경로 설정
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-
-        // 일반적으로 쿠키를 추가
-        response.addCookie(cookie);
-
-        // SameSite=None을 포함하여 Set-Cookie 헤더를 직접 설정
-        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=None",
-                cookie.getName(), cookie.getValue(), cookie.getMaxAge(), cookie.getPath());
-
-        response.addHeader("Set-Cookie", cookieHeader);
+    private ResponseCookie createCookie(String name, String value) {
+        return ResponseCookie.from(name, value)
+                .maxAge(7 * 24 * 60 * 60)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(true)
+                .build();
     }
 }

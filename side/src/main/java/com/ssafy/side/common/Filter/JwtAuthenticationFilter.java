@@ -44,8 +44,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/oauth/cookie/logout",
             "/oauth/authorization/logout"
     );
-    private static final String LOGOUT_WITH_HEADER_API_URL = "/oauth/logout/authorization";
-    private static final String REISSUE_WITH_HEADER_API_URL = "/oauth/reissue/authorization";
+    private static final String LOGOUT_WITH_HEADER_API_URL = "/oauth/authorization/logout";
+    private static final String REISSUE_WITH_HEADER_API_URL = "/oauth/authorization/reissue";
     private static final String ACCESS_TOKEN_IN_COOKIE_URL = "/oauth/cookie/member";
 
     @Value(value = "${client.domain}")
@@ -107,7 +107,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new UnAuthorizedException(ERR_NO_COOKIE);
         }
 
-        // 쿠키의 key와 value, path를 로그로 출력하여 경로 확인
         Arrays.stream(cookies).forEach(cookie ->
                 log.info("Cookie key: {}, value: {}", cookie.getName(), cookie.getValue())
         );
@@ -118,10 +117,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .map(Cookie::getValue)
                 .findFirst();
 
-        // refreshToken이 존재할 경우 로그로 출력
         refreshToken.ifPresent(value -> log.info("Found refreshToken value: {}", value));
-
-        // refreshToken이 없으면 예외를 던짐
         return refreshToken.orElseThrow(() -> new UnAuthorizedException(ERR_REFRESH_TOKEN_EXPIRED));
     }
 

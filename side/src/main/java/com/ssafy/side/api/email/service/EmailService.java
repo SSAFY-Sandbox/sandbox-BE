@@ -1,6 +1,9 @@
 package com.ssafy.side.api.email.service;
 
+import com.ssafy.side.api.email.dto.EmailAuthenticationRequestDto;
+import com.ssafy.side.api.email.dto.EmailAuthenticationResponseDto;
 import com.ssafy.side.api.email.dto.EmailSendResponseDto;
+import com.ssafy.side.common.exception.BadRequestException;
 import com.ssafy.side.common.exception.ErrorMessage;
 import com.ssafy.side.common.exception.InternalServerException;
 import com.ssafy.side.common.util.RedisUtil;
@@ -73,5 +76,19 @@ public class EmailService {
         }
 
         return code.toString();
+    }
+
+    public EmailAuthenticationResponseDto verifyEmailAuthentication(
+            EmailAuthenticationRequestDto emailAuthenticationRequestDto) {
+        if (emailAuthenticationRequestDto.email() == null
+                || emailAuthenticationRequestDto.authenticationCode() == null) {
+            throw new BadRequestException(ErrorMessage.ERR_INVALID_EMAIL_INFO);
+        }
+        if (!redisUtil.hasKey(emailAuthenticationRequestDto.email()) || !redisUtil.getValue(
+                emailAuthenticationRequestDto.email()).equals(emailAuthenticationRequestDto.authenticationCode())) {
+            return new EmailAuthenticationResponseDto(false);
+        }
+        redisUtil.deleteValue(emailAuthenticationRequestDto.email());
+        return new EmailAuthenticationResponseDto(true);
     }
 }

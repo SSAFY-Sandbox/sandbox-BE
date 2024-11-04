@@ -11,7 +11,7 @@ public enum ErrorMessage {
      * 400 Bad Request
      */
     ERR_MISSING_AUTHORIZATION_CODE,
-
+    ERR_INVALID_EMAIL_INFO,
     /**
      * 401 UNAUTHORIZED
      */

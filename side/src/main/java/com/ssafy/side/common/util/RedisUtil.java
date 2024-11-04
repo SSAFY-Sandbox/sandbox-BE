@@ -22,7 +22,7 @@ public class RedisUtil {
 
     public void setValueWithExpiration(String key, String value, long duration) {
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        Duration expireDuration = Duration.ofSeconds(duration);
+        Duration expireDuration = Duration.ofMillis(duration);
         valueOperations.set(key, value, expireDuration);
     }
 

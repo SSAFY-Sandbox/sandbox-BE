@@ -1,5 +1,7 @@
 package com.ssafy.side.api.email.controller;
 
+import com.ssafy.side.api.email.dto.EmailAuthenticationRequestDto;
+import com.ssafy.side.api.email.dto.EmailAuthenticationResponseDto;
 import com.ssafy.side.api.email.dto.EmailSendRequestDto;
 import com.ssafy.side.api.email.dto.EmailSendResponseDto;
 import com.ssafy.side.api.email.service.EmailService;
@@ -20,7 +22,17 @@ public class EmailController implements EmailApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<EmailSendResponseDto> sendEmail(@RequestBody @Valid EmailSendRequestDto emailSendRequestDto) {
+    public ResponseEntity<EmailSendResponseDto> sendEmail(
+            @RequestBody @Valid EmailSendRequestDto emailSendRequestDto
+    ) {
         return ResponseEntity.ok().body(emailService.sendVerificationEmail(emailSendRequestDto.email()));
+    }
+
+    @Override
+    @PostMapping("/authentication")
+    public ResponseEntity<EmailAuthenticationResponseDto> verifyEmailAuthentication(
+            @RequestBody @Valid EmailAuthenticationRequestDto emailAuthenticationRequestDto
+    ) {
+        return ResponseEntity.ok().body(emailService.verifyEmailAuthentication(emailAuthenticationRequestDto));
     }
 }

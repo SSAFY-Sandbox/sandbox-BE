@@ -3,9 +3,11 @@ package com.ssafy.side.api.email.controller;
 import com.ssafy.side.api.email.dto.EmailSendRequestDto;
 import com.ssafy.side.api.email.dto.EmailSendResponseDto;
 import com.ssafy.side.api.email.service.EmailService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +20,7 @@ public class EmailController implements EmailApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<EmailSendResponseDto> sendEmail(EmailSendRequestDto emailSendRequestDto) {
+    public ResponseEntity<EmailSendResponseDto> sendEmail(@RequestBody @Valid EmailSendRequestDto emailSendRequestDto) {
         return ResponseEntity.ok().body(emailService.sendVerificationEmail(emailSendRequestDto.email()));
     }
 }

@@ -48,6 +48,9 @@ dependencies {
 	//* Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	//* Email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
 

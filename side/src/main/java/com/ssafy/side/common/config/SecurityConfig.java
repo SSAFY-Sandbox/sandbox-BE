@@ -1,8 +1,8 @@
 package com.ssafy.side.common.config;
 
-import com.ssafy.side.common.config.jwt.JwtAuthenticationEntryPoint;
+import com.ssafy.side.common.jwt.JwtAuthenticationEntryPoint;
 import com.ssafy.side.common.Filter.JwtAuthenticationFilter;
-import com.ssafy.side.common.config.jwt.JwtTokenProvider;
+import com.ssafy.side.common.jwt.JwtTokenProvider;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;

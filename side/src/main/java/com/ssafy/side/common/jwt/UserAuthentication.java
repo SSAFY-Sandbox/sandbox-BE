@@ -1,4 +1,4 @@
-package com.ssafy.side.common.config.jwt;
+package com.ssafy.side.common.jwt;
 
 
 import java.util.Collection;

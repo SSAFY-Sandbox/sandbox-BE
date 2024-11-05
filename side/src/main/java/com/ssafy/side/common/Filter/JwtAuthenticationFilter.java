@@ -2,10 +2,10 @@ package com.ssafy.side.common.Filter;
 
 import static com.ssafy.side.common.exception.ErrorMessage.*;
 
-import com.ssafy.side.common.config.jwt.JwtAuthenticationEntryPoint;
-import com.ssafy.side.common.config.jwt.JwtExceptionType;
-import com.ssafy.side.common.config.jwt.JwtTokenProvider;
-import com.ssafy.side.common.config.jwt.UserAuthentication;
+import com.ssafy.side.common.jwt.JwtAuthenticationEntryPoint;
+import com.ssafy.side.common.jwt.JwtExceptionType;
+import com.ssafy.side.common.jwt.JwtTokenProvider;
+import com.ssafy.side.common.jwt.UserAuthentication;
 import com.ssafy.side.common.exception.UnAuthorizedException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -80,10 +80,7 @@ public class EmailService {
 
     public EmailAuthenticationResponseDto verifyEmailAuthentication(
             EmailAuthenticationRequestDto emailAuthenticationRequestDto) {
-        if (emailAuthenticationRequestDto.email() == null
-                || emailAuthenticationRequestDto.authenticationCode() == null) {
-            throw new BadRequestException(ErrorMessage.ERR_INVALID_EMAIL_INFO);
-        }
+
         if (!redisUtil.hasKey(emailAuthenticationRequestDto.email()) || !redisUtil.getValue(
                 emailAuthenticationRequestDto.email()).equals(emailAuthenticationRequestDto.authenticationCode())) {
             return new EmailAuthenticationResponseDto(false);

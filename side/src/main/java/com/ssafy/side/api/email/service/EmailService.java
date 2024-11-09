@@ -3,7 +3,6 @@ package com.ssafy.side.api.email.service;
 import com.ssafy.side.api.email.dto.EmailAuthenticationRequestDto;
 import com.ssafy.side.api.email.dto.EmailAuthenticationResponseDto;
 import com.ssafy.side.api.email.dto.EmailSendResponseDto;
-import com.ssafy.side.common.exception.BadRequestException;
 import com.ssafy.side.common.exception.ErrorMessage;
 import com.ssafy.side.common.exception.InternalServerException;
 import com.ssafy.side.common.util.RedisUtil;
@@ -32,9 +31,7 @@ public class EmailService {
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long expirationMillis;
 
-    private final String upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
-    private final String numbers = "0123456789";
+    private final String SECURE_NUMBER = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     public EmailSendResponseDto sendVerificationEmail(String email) {
         if (redisUtil.hasKey(email)) {
@@ -64,20 +61,6 @@ public class EmailService {
         }
     }
 
-    public String generateVerificationCode() {
-        String allCharacters = upperCaseLetters + lowerCaseLetters + numbers;
-
-        SecureRandom random = new SecureRandom();
-        StringBuilder code = new StringBuilder(6);
-
-        for (int i = 0; i < 6; i++) {
-            int index = random.nextInt(allCharacters.length());
-            code.append(allCharacters.charAt(index));
-        }
-
-        return code.toString();
-    }
-
     public EmailAuthenticationResponseDto verifyEmailAuthentication(
             EmailAuthenticationRequestDto emailAuthenticationRequestDto) {
 
@@ -87,5 +70,12 @@ public class EmailService {
         }
         redisUtil.deleteValue(emailAuthenticationRequestDto.email());
         return new EmailAuthenticationResponseDto(true);
+    }
+
+    private String generateVerificationCode() {
+        return new SecureRandom().ints(6, 0, SECURE_NUMBER.length())
+                .mapToObj(SECURE_NUMBER::charAt)
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+                .toString();
     }
 }

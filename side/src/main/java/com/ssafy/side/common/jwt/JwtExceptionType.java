@@ -1,4 +1,4 @@
-package com.ssafy.side.common.config.jwt;
+package com.ssafy.side.common.jwt;
 
 public enum JwtExceptionType {
   VALID_JWT_TOKEN,            // 유효한 JWT

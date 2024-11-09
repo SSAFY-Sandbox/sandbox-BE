@@ -45,6 +45,13 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 	implementation 'com.auth0:java-jwt:4.4.0'
 
+	//* Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	//* Email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
 

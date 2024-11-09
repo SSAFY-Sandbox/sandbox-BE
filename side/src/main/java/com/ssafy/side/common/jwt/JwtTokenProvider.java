@@ -1,4 +1,4 @@
-package com.ssafy.side.common.config.jwt;
+package com.ssafy.side.common.jwt;
 
 import com.ssafy.side.api.member.domain.Member;
 import com.ssafy.side.api.member.domain.MemberRepository;

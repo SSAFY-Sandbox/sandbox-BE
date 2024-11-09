@@ -1,4 +1,4 @@
-package com.ssafy.side.common.config.jwt;
+package com.ssafy.side.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.side.common.exception.ErrorMessage;

@@ -28,6 +28,16 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
 
+      - name: Debug directory structure
+        run: |
+          pwd
+          ls -R
+        working-directory: ${{ env.working-directory }}
+
+      - name: Create resources directory
+        run: mkdir -p ./src/main/resources
+        working-directory: ${{ env.working-directory }}
+
       - name : Create application.yml from secret
         run: |
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml

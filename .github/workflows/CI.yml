@@ -1,0 +1,44 @@
+name: SANDBOX-CI
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    env:
+      working-directory: side # 해당 디렉토리를 기준으로 아래 step에서 기준 디렉토리가 설정
+
+    steps:
+      - name : Check-out
+        uses: actions/checkout@v3 # github에서 미리 만들어둔 workflow 가져오기
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3 # Java 환경 세팅
+        with:
+          distribution: 'corretto'
+          java-version : '17'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+
+      - name : Create application.yml from secret
+        run: |
+          cd src/main/resources
+          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+        working-directory: ${{ env.working-directory }}
+
+      - name: Build
+        run: |
+          chmod +x gradlew
+          ./gradlew build -x test
+        working-directory: ${{ env.working-directory }}
+
+
+

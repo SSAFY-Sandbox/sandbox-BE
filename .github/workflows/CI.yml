@@ -34,6 +34,12 @@ jobs:
           echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
         working-directory: ${{ env.working-directory }}
 
+      - name: Create keystore.p12
+        run: |
+          cd src/main/resources
+          echo "${{ secrets.KEYSTORE_P12_BASE64 }}" | base64 --decode > ./keystore.p12
+        working-directory: ${{ env.working-directory }}
+
       - name: Build
         run: |
           chmod +x gradlew

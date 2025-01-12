@@ -52,6 +52,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
+	//* Firebase
+	implementation 'com.google.firebase:firebase-admin:8.0.0'
+
+	//* Configuration
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
 

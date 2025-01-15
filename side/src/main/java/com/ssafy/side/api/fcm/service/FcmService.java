@@ -6,8 +6,8 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.ssafy.side.api.fcm.component.FirebaseApplicationProperties;
 import com.ssafy.side.api.fcm.domain.FcmToken;
-import com.ssafy.side.api.fcm.dto.FcmTokenRequest;
-import com.ssafy.side.api.fcm.dto.FirebaseApplicationPropertiesResponse;
+import com.ssafy.side.api.fcm.dto.FcmTokenRequestDto;
+import com.ssafy.side.api.fcm.dto.FirebaseApplicationPropertiesResponseDto;
 import com.ssafy.side.api.fcm.dto.NotificationRequestDto;
 import com.ssafy.side.api.fcm.repository.FcmRepository;
 import com.ssafy.side.common.exception.ErrorMessage;
@@ -28,13 +28,13 @@ public class FcmService {
     private final FirebaseApplicationProperties firebaseApplicationProperties;
     private final FirebaseMessaging firebaseMessaging;
 
-    public FirebaseApplicationPropertiesResponse getFirebaseApplicationConfig() {
-        return FirebaseApplicationPropertiesResponse.of(firebaseApplicationProperties);
+    public FirebaseApplicationPropertiesResponseDto getFirebaseApplicationConfig() {
+        return FirebaseApplicationPropertiesResponseDto.of(firebaseApplicationProperties);
     }
 
     @Transactional
-    public Long saveFcmToken(FcmTokenRequest fcmTokenRequest) {
-        FcmToken fcmToken = new FcmToken(fcmTokenRequest.token());
+    public Long saveFcmToken(FcmTokenRequestDto fcmTokenRequestDto) {
+        FcmToken fcmToken = new FcmToken(fcmTokenRequestDto.token());
         return fcmRepository.save(fcmToken).getId();
     }
 

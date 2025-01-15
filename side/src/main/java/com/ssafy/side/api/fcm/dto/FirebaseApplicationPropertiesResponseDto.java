@@ -2,7 +2,7 @@ package com.ssafy.side.api.fcm.dto;
 
 import com.ssafy.side.api.fcm.component.FirebaseApplicationProperties;
 
-public record FirebaseApplicationPropertiesResponse(
+public record FirebaseApplicationPropertiesResponseDto(
         String apiKey,
         String authDomain,
         String projectId,
@@ -12,10 +12,10 @@ public record FirebaseApplicationPropertiesResponse(
         String measurementId,
         String vapidKey
 ) {
-    public static FirebaseApplicationPropertiesResponse of(
+    public static FirebaseApplicationPropertiesResponseDto of(
             FirebaseApplicationProperties firebaseApplicationProperties
     ) {
-        return new FirebaseApplicationPropertiesResponse(
+        return new FirebaseApplicationPropertiesResponseDto(
                 firebaseApplicationProperties.getApiKey(),
                 firebaseApplicationProperties.getAuthDomain(),
                 firebaseApplicationProperties.getProjectId(),

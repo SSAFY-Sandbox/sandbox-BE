@@ -1,7 +1,7 @@
 package com.ssafy.side.api.fcm.controller;
 
-import com.ssafy.side.api.fcm.dto.FcmTokenRequest;
-import com.ssafy.side.api.fcm.dto.FirebaseApplicationPropertiesResponse;
+import com.ssafy.side.api.fcm.dto.FcmTokenRequestDto;
+import com.ssafy.side.api.fcm.dto.FirebaseApplicationPropertiesResponseDto;
 import com.ssafy.side.api.fcm.dto.NotificationRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface FcmApi {
 
     @Operation(summary = "FCM 설정 조회", description = "FCM 설정을 조회하는 API 입니다.")
-    ResponseEntity<FirebaseApplicationPropertiesResponse> getFirebaseApplicationConfig();
+    ResponseEntity<FirebaseApplicationPropertiesResponseDto> getFirebaseApplicationConfig();
 
     @Operation(summary = "FCM 토큰 조회", description = "FCM 토큰을 조회하는 API 입니다.")
-    ResponseEntity<Void> saveFcmToken(@Valid @RequestBody FcmTokenRequest fcmTokenRequest);
+    ResponseEntity<Void> saveFcmToken(@Valid @RequestBody FcmTokenRequestDto fcmTokenRequestDto);
 
     @Operation(summary = "Notification 테스트", description = "Notification 테스트 API 입니다.")
     ResponseEntity<Void> sendNotification(@Valid @RequestBody NotificationRequestDto notificationRequestDto);

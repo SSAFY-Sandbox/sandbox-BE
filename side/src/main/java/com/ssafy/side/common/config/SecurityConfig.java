@@ -45,7 +45,8 @@ public class SecurityConfig {
             "/health",
             "/email/**",
             "/fcmconfig",
-            "/fcmtoken"
+            "/fcmtoken",
+            "/notification"
     };
 
     @Bean

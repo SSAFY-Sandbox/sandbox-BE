@@ -2,6 +2,7 @@ package com.ssafy.side.api.fcm.controller;
 
 import com.ssafy.side.api.fcm.dto.FcmTokenRequest;
 import com.ssafy.side.api.fcm.dto.FirebaseApplicationPropertiesResponse;
+import com.ssafy.side.api.fcm.dto.NotificationRequestDto;
 import com.ssafy.side.api.fcm.service.FcmService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,13 @@ public class FcmController implements FcmApi {
     @PostMapping("/fcmtoken")
     public ResponseEntity<Void> saveFcmToken(@Valid @RequestBody FcmTokenRequest fcmTokenRequest) {
         fcmService.saveFcmToken(fcmTokenRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @PostMapping("/notification")
+    public ResponseEntity<Void> sendNotification(@Valid @RequestBody NotificationRequestDto notificationRequestDto) {
+        fcmService.sendNotifications(notificationRequestDto);
         return ResponseEntity.ok().build();
     }
 }

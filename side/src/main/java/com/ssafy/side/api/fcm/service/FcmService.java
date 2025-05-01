@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,21 +44,30 @@ public class FcmService {
     }
 
     public void sendNotifications(NotificationRequestDto notificationRequestDto) {
-        List<FcmToken> deviceTokens = fcmRepository.findAll();
+        int batchSize = 500;
 
-        if (deviceTokens.isEmpty()) {
-            return;
-        }
+        PageRequest pageable = PageRequest.of(0, batchSize);
+        Page<FcmToken> tokenPage;
 
-        MulticastMessage notificationMessage = buildMulticastMessage(deviceTokens, notificationRequestDto);
+        do {
+            tokenPage = fcmRepository.findAll(pageable);
+            List<FcmToken> deviceTokens = tokenPage.getContent();
 
-        try {
-            BatchResponse batchResponse = firebaseMessaging.sendEachForMulticast(notificationMessage);
-            handleBatchResponse(batchResponse, deviceTokens);
-        } catch (FirebaseMessagingException e) {
-            log.error("Failed to send FCM message", e);
-            throw new InternalServerException(ErrorMessage.ERR_FCM_FAILED_TO_SEND);
-        }
+            if (deviceTokens.isEmpty()) {
+                break;
+            }
+
+            MulticastMessage notificationMessage = buildMulticastMessage(deviceTokens, notificationRequestDto);
+
+            try {
+                BatchResponse batchResponse = firebaseMessaging.sendEachForMulticast(notificationMessage);
+                handleBatchResponse(batchResponse, deviceTokens);
+            } catch (FirebaseMessagingException e) {
+                log.error("Failed to send FCM message", e);
+                throw new InternalServerException(ErrorMessage.ERR_FCM_FAILED_TO_SEND);
+            }
+            pageable = pageable.next();
+        } while (!tokenPage.isLast());
     }
 
     private MulticastMessage buildMulticastMessage(List<FcmToken> deviceTokens,

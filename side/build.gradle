@@ -53,7 +53,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 	//* Firebase
-	implementation 'com.google.firebase:firebase-admin:8.0.0'
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 
 	//* Configuration
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

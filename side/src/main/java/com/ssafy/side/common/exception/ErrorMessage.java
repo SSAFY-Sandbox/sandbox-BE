@@ -31,6 +31,7 @@ public enum ErrorMessage {
      * 500 Internal Server Error - Email Errors
      */
     ERR_EMAIL_FAILED_TO_SEND,
+    ERR_FCM_FAILED_TO_SEND,
     ;
 
 }

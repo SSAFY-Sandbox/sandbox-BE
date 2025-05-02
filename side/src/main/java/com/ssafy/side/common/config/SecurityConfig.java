@@ -1,7 +1,7 @@
 package com.ssafy.side.common.config;
 
-import com.ssafy.side.common.jwt.JwtAuthenticationEntryPoint;
 import com.ssafy.side.common.Filter.JwtAuthenticationFilter;
+import com.ssafy.side.common.jwt.JwtAuthenticationEntryPoint;
 import com.ssafy.side.common.jwt.JwtTokenProvider;
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -44,6 +44,9 @@ public class SecurityConfig {
             "/actuator/**",
             "/health",
             "/email/**",
+            "/fcmconfig",
+            "/fcmtoken",
+            "/notification"
     };
 
     @Bean
@@ -62,7 +65,8 @@ public class SecurityConfig {
                                         .of(AUTH_WHITELIST)
                                         .map(AntPathRequestMatcher::antMatcher)
                                         .toArray(AntPathRequestMatcher[]::new)).permitAll()
-                                .anyRequest().authenticated())
+                                .anyRequest().authenticated()
+                )
                 .addFilterBefore(
                         new JwtAuthenticationFilter(this.jwtTokenProvider, this.jwtAuthenticationEntryPoint),
                         UsernamePasswordAuthenticationFilter.class)
